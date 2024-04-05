@@ -17,12 +17,12 @@ import (
 	"golang.org/x/time/rate"
 )
 
-// Create a rate limiter that allows up to 10 requests per second with a burst size of 10.
+//  rate limiter that allows up to 10 requests per second 
 var limiter = rate.NewLimiter(rate.Every(time.Second/20), 10)
 
 func AuthHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Check the rate limiter at the very beginning of the handler.
+		// Check the rate limiter 
 		if !limiter.Allow() {
 			http.Error(w, "Too Many Requests", http.StatusTooManyRequests)
 			return
@@ -68,12 +68,12 @@ func AuthHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		// Assuming fetchUserID function is defined elsewhere and correctly retrieves the user's ID based on the username.
+		// retrieves the user's ID based on the username.
 		userID := fetchUserID(db, username) // Only log if user is found
 		if userID != 0 {
 			_, err = db.Exec("INSERT INTO auth_logs (request_ip, user_id) VALUES (?, ?)", r.RemoteAddr, userID)
 			if err != nil {
-				log.Printf("Failed to log auth request: %v", err) // Log the error; don't fail the request
+				log.Printf("Failed to log auth request: %v", err) // Log the error; don't fail 
 			}
 		}
 
@@ -97,7 +97,7 @@ func fetchSigningKey(db *sql.DB, expired bool) (*rsa.PrivateKey, string, error) 
 	var kid int // Use int for kid schema
 	var err error
 
-	// Adjust the SQL query as needed if you're dealing with encrypted keys.
+	
 	if expired {
 		err = db.QueryRow("SELECT kid, key FROM keys WHERE exp <= ?", time.Now().Unix()).Scan(&kid, &encryptedKeyPEM)
 	} else {

@@ -21,7 +21,7 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 		}
 
 		password := uuid.New().String()
-		salt := []byte(uuid.New().String()) // Generate a unique salt for Argon2
+		salt := []byte(uuid.New().String()) 
 		passwordHash := argon2.IDKey([]byte(password), salt, 1, 64*1024, 4, 32)
 
 		_, err := db.Exec("INSERT INTO users (username, password_hash, email) VALUES (?, ?, ?)", user.Username, passwordHash, user.Email)
